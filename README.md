@@ -1,3 +1,5 @@
+<img src=https://webber.rocks/4d386103db5a09.png align=right>
+
 <p><h1>gx</h1></p>
 
 <p>
@@ -5,7 +7,6 @@
 <a href="https://goreportcard.com/report/github.com/crxssorg/gx"><img src="https://goreportcard.com/badge/github.com/crxssorg/gx" alt="Go Report Card"></a>
 
 </p>
-<img src=https://webber.rocks/4d386103db5a09.png align=right>
 
 <h4>A Go library for vichan compatible APIs, targetting Crxss.</h4>
 
