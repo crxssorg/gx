@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// Client represents a client accessing a site's API
 type Client struct {
 	UserAgent  string
 	Domain     string
