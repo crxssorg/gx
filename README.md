@@ -1,7 +1,7 @@
 <p><h1>gx</h1></p>
 
 <p>
-<a href=https://pkg.go.dev/crxssorg/gx><img src=https://img.shields.io/badge/dev-reference-007d9c?logo=go&logoColor=white&style=plastic</img></a>
+<a href=https://pkg.go.dev/github.com/crxssorg/gx><img src=https://img.shields.io/badge/dev-reference-007d9c?logo=go&logoColor=white&style=plastic</img></a>
 <a href="https://goreportcard.com/report/github.com/crxssorg/gx"><img src="https://goreportcard.com/badge/github.com/crxssorg/gx" alt="Go Report Card"></a>
 
 </p>
