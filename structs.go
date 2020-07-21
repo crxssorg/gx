@@ -1,14 +1,17 @@
 package gx
 
+// Represents a full catalog of pages
 type Catalog struct {
 	Pages []CatalogPage
 }
 
+// Represents a page of the catalog
 type CatalogPage struct {
 	PageNumber int    `json:"page"`
 	Threads    []Post `json:"threads"`
 }
 
+// Represents a post or thread post in the context of the catalog
 type Post struct {
 	No              int    `json:"no"`
 	LastModified    int    `json:"last_modified"`
@@ -30,11 +33,12 @@ type Post struct {
 	RenamedFilename string `json:"tim"`
 	ThumbnailHeight int    `json:"tn_h"`
 	ThumbnailWidth  int    `json:"tn_w"`
-	ImageHeight     int    `json:"h"`
-	ImageWidth      int    `json:"w"`
+	Height          int    `json:"h"`
+	Width           int    `json:"w"`
 	ExtraFiles      []File `json:"extra_files"`
 }
 
+// Represents a file, only ever used in the context of extra files attached to a post
 type File struct {
 	Extension       string `json:"ext"`
 	Filename        string `json:"file"`
@@ -45,6 +49,7 @@ type File struct {
 	ThumbnailWidth  int    `json:"tn_w"`
 }
 
+// Represents a true thread
 type Thread struct {
 	Posts []Post `json:"posts"`
 }
