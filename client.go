@@ -2,9 +2,9 @@ package gx
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"net/http"
-	"strconv"
 )
 
 // Client represents a client accessing a site's API
@@ -20,67 +20,66 @@ func New(domain string) Client {
 }
 
 // GetCatalog gets a catalog struct from a given board's name.
-func (c *Client) GetCatalog(board string) (Catalog, error) {
-	h := c.HTTPClient
-	url := "https://" + c.Domain + "/" + board + "/catalog.json"
+func (c *Client) GetCatalog(board string) (*Catalog, error) {
+	url := fmt.Sprintf("https://%s/%s/catalog.json", c.Domain, board)
 
-	r, err := http.NewRequest("GET", url, nil)
+	b, err := c.get(url)
 	if err != nil {
-		return Catalog{}, err
-	}
-
-	r.Header.Set("User-Agent", c.UserAgent)
-
-	rs, err := h.Do(r)
-	if err != nil {
-		return Catalog{}, err
-	}
-
-	b, err := ioutil.ReadAll(rs.Body)
-	if err != nil {
-		return Catalog{}, err
+		return nil, err
 	}
 
 	var cl Catalog
 
-	err = json.Unmarshal(b, &cl.Pages)
+	err = json.Unmarshal(*b, &cl.Pages)
 	if err != nil {
-		return Catalog{}, err
+		return nil, err
 	}
 
-	return cl, nil
+	return &cl, nil
 
 }
 
 // GetThread gets a Thread struct from a given thread number and board name.
-func (c *Client) GetThread(board string, thread int) (Thread, error) {
-	h := c.HTTPClient
-	url := "https://" + c.Domain + "/" + board + "/res/" + strconv.Itoa(thread) + ".json"
-
-	r, err := http.NewRequest("GET", url, nil)
+func (c *Client) GetThread(board string, number uint64) (*Thread, error) {
+	url := fmt.Sprintf("https://%s/%s/res/%d.json", c.Domain, board, number)
+	b, err := c.get(url)
 	if err != nil {
-		return Thread{}, err
+		return nil, err
 	}
 
-	r.Header.Add("User-Agent", c.UserAgent)
+	var t *Thread
 
-	rs, err := h.Do(r)
+	err = json.Unmarshal(*b, t)
 	if err != nil {
-		return Thread{}, err
-	}
-
-	b, err := ioutil.ReadAll(rs.Body)
-	if err != nil {
-		return Thread{}, err
-	}
-
-	var t Thread
-
-	err = json.Unmarshal(b, &t)
-	if err != nil {
-		return Thread{}, err
+		return nil, err
 	}
 
 	return t, nil
+
+}
+
+func (c *Client) get(url string) (*[]byte, error) {
+	h := c.HTTPClient
+
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("User-Agent", c.UserAgent)
+
+	response, err := h.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
+	defer response.Body.Close()
+
+	b, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return &b, nil
 
 }
