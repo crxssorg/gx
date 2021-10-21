@@ -15,8 +15,8 @@ type Client struct {
 }
 
 // New returns a Client struct configured to work with a given domain.
-func New(domain string) Client {
-	return Client{UserAgent: "gx", Domain: domain, HTTPClient: &http.Client{}}
+func New(domain string) *Client {
+	return &Client{UserAgent: "gx", Domain: domain, HTTPClient: &http.Client{}}
 }
 
 // GetCatalog gets a catalog struct from a given board's name.
