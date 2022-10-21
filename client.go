@@ -23,14 +23,14 @@ func New(domain string) *Client {
 func (c *Client) GetCatalog(board string) (*Catalog, error) {
 	url := fmt.Sprintf("https://%s/%s/catalog.json", c.Domain, board)
 
-	b, err := c.get(url)
+	b, err := c.getRead(url)
 	if err != nil {
 		return nil, err
 	}
 
 	var cl Catalog
 
-	err = json.Unmarshal(*b, &cl.Pages)
+	err = json.Unmarshal(b, &cl.Pages)
 	if err != nil {
 		return nil, err
 	}
@@ -42,14 +42,14 @@ func (c *Client) GetCatalog(board string) (*Catalog, error) {
 // GetThread gets a Thread struct from a given thread number and board name.
 func (c *Client) GetThread(board string, number uint64) (*Thread, error) {
 	url := fmt.Sprintf("https://%s/%s/res/%d.json", c.Domain, board, number)
-	b, err := c.get(url)
+	b, err := c.getRead(url)
 	if err != nil {
 		return nil, err
 	}
 
 	var t *Thread
 
-	err = json.Unmarshal(*b, t)
+	err = json.Unmarshal(b, t)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,19 @@ func (c *Client) GetThread(board string, number uint64) (*Thread, error) {
 
 }
 
-func (c *Client) get(url string) (*[]byte, error) {
+func (c *Client) getRead(url string) ([]byte, error) {
+	resp, err := c.get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Close()
+
+	return io.ReadAll(resp)
+
+}
+
+func (c *Client) get(url string) (io.ReadCloser, error) {
 	h := c.HTTPClient
 
 	request, err := http.NewRequest("GET", url, nil)
@@ -73,13 +85,5 @@ func (c *Client) get(url string) (*[]byte, error) {
 		return nil, err
 	}
 
-	defer response.Body.Close()
-
-	b, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return &b, nil
-
+	return response.Body, nil
 }
