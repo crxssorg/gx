@@ -53,14 +53,14 @@ func (c *Client) GetThread(board string, number uint64) (*Thread, error) {
 		return nil, err
 	}
 
-	var t *Thread
+	var t Thread
 
-	err = json.NewDecoder(b).Decode(t)
+	err = json.NewDecoder(b).Decode(&t)
 	if err != nil {
 		return nil, err
 	}
 
-	return t, nil
+	return &t, nil
 
 }
 
