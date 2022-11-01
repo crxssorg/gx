@@ -1,16 +1,21 @@
 package gx
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func Test(t *testing.T) {
 	c := New("lainchan.org")
 	c.UserAgent = "gx v0.0.0/test"
 
-	catalog, err := c.GetCatalog("λ")
+	thread, err := c.GetThread("λ", 31169)
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Error(err)
 	}
 
-	_ = catalog.Pages[0].Threads[0]
+	if !strings.HasPrefix(thread.Posts[0].Comment, "This is the") {
+		t.Error("Body does not match.")
+	}
 
 }
